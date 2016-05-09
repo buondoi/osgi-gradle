@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 
 /**
  * Created on 5/9/16.
@@ -19,9 +21,9 @@ public final class Instructions
 
 	private Instructions(final Builder builder)
 	{
-		this.exports = builder.exports;
-		this.requires = builder.requires;
-		this.embeddedLibs = builder.embeddedLibs;
+		this.exports = builder.exports == null ? emptyList() : builder.exports;
+		this.requires = builder.requires == null ? emptyList() : builder.requires;
+		this.embeddedLibs = builder.embeddedLibs == null ? emptyList() : builder.embeddedLibs;
 	}
 
 	public List<String> getRequires()
