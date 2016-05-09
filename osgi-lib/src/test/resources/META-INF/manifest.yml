@@ -1,4 +1,4 @@
 exports:
-  - ""
+  - "com.padma"
 requires:
-  - ""
+  - "javax.sql"

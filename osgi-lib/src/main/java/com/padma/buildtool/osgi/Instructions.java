@@ -11,12 +11,12 @@ import java.util.List;
 /**
  * Created on 5/9/16.
  */
-public final class BundleManifest
+public final class Instructions
 {
 	private final List<String> requires;
 	private final List<String> exports;
 
-	private BundleManifest(final Builder builder)
+	private Instructions(final Builder builder)
 	{
 		this.exports = builder.exports;
 		this.requires = builder.requires;
@@ -32,7 +32,7 @@ public final class BundleManifest
 		return exports;
 	}
 
-	public static BundleManifest from(URL url) throws IOException
+	public static Instructions fromYml(URL url) throws IOException
 	{
 		final Yaml yaml = new Yaml();
 		try (final InputStream in = url.openStream())
@@ -42,7 +42,7 @@ public final class BundleManifest
 		}
 	}
 
-	public final class Builder
+	public static final class Builder
 	{
 		private List<String> exports;
 		private List<String> requires;
@@ -57,9 +57,9 @@ public final class BundleManifest
 			this.requires = requires;
 		}
 
-		public BundleManifest build()
+		public Instructions build()
 		{
-			return new BundleManifest(this);
+			return new Instructions(this);
 		}
 	}
 }
