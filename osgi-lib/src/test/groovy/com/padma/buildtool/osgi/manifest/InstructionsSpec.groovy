@@ -1,4 +1,4 @@
-package com.padma.buildtool.osgi
+package com.padma.buildtool.osgi.manifest
 
 import spock.lang.Specification
 
@@ -20,5 +20,6 @@ class InstructionsSpec extends Specification
 		manifest != null
 		manifest.exports.contains('com.padma')
 		manifest.requires.contains('javax.sql')
+		manifest.embeddedLibs.contains('META-INF/libs')
 	}
 }

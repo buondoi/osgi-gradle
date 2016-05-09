@@ -1,4 +1,4 @@
-package com.padma.buildtool.osgi;
+package com.padma.buildtool.osgi.manifest;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -15,11 +15,13 @@ public final class Instructions
 {
 	private final List<String> requires;
 	private final List<String> exports;
+	private final List<String> embeddedLibs;
 
 	private Instructions(final Builder builder)
 	{
 		this.exports = builder.exports;
 		this.requires = builder.requires;
+		this.embeddedLibs = builder.embeddedLibs;
 	}
 
 	public List<String> getRequires()
@@ -30,6 +32,11 @@ public final class Instructions
 	public List<String> getExports()
 	{
 		return exports;
+	}
+
+	public List<String> getEmbeddedLibs()
+	{
+		return embeddedLibs;
 	}
 
 	public static Instructions fromYml(URL url) throws IOException
@@ -46,6 +53,7 @@ public final class Instructions
 	{
 		private List<String> exports;
 		private List<String> requires;
+		private List<String> embeddedLibs;
 
 		public void setExports(final List<String> exports)
 		{
@@ -55,6 +63,11 @@ public final class Instructions
 		public void setRequires(final List<String> requires)
 		{
 			this.requires = requires;
+		}
+
+		public void setEmbeddedLibs(List<String> embeddedLibs)
+		{
+			this.embeddedLibs = embeddedLibs;
 		}
 
 		public Instructions build()

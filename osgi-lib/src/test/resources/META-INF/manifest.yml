@@ -2,3 +2,5 @@ exports:
   - "com.padma"
 requires:
   - "javax.sql"
+embeddedLibs:
+  - "META-INF/libs"
