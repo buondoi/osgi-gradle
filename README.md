@@ -1,7 +1,7 @@
 ![](https://travis-ci.org/buondoi/osgi-gradle.svg?branch=master)
 # Why
 * Support OSGI instructions in Yaml format.
-* Define OSGI instructions in a separated file so it can be used by build tool (Gradle) or integration test framework.
+* Define OSGI instructions in a separated file so it can be used by build tool (Gradle) or integration test framework in consistent way
 
 # How to use
 OSGI instructions are declared in **META-INF/manifest.yml** file.
