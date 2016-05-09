@@ -1,0 +1,11 @@
+apply plugin: 'java'
+
+ext {
+    bndVersion = '3.1.0'
+    snakeyamlVersion = '1.17'
+}
+
+dependencies {
+    compile("org.yaml:snakeyaml:$snakeyamlVersion")
+    compile("biz.aQute.bnd:biz.aQute.bndlib:$bndVersion")
+}

@@ -1,4 +1,4 @@
-package com.padma.tool.gradle.osgi
+package com.padma.tool.gradle.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

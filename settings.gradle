@@ -1,0 +1,2 @@
+include 'osgi-lib'
+include 'osgi-plugin'

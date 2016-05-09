@@ -1,28 +1,24 @@
-apply plugin: 'groovy'
-
-repositories {
-    jcenter()
-    mavenLocal()
-}
-
 ext {
-    bndVersion = '3.1.0'
     spockVersion = '1.0-groovy-2.4'
     groovyVersion = '2.4.4' // this version is compatible with spockVersion.
-    snakeyamlVersion = '1.17'
 }
 
-dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    compile("org.yaml:snakeyaml:$snakeyamlVersion")
-    compile("biz.aQute.bnd:biz.aQute.bndlib:$bndVersion")
+configure(subprojects) {
 
-    testCompile("org.spockframework:spock-core:${spockVersion}") {
-        exclude group: 'org.codehaus.groovy'
+    repositories {
+        mavenLocal()
+        jcenter()
     }
-    testCompile("org.codehaus.groovy:groovy-all:$groovyVersion")
-    testCompile('org.hamcrest:hamcrest-core:1.3') // only necessary if Hamcrest matchers are used
-    testCompile('cglib:cglib-nodep:3.1') // used for spock framework to mock non-interface classes.
-    testCompile('org.objenesis:objenesis:2.1') // used when mocked class has non-default constructor
+
+    apply plugin: 'java'
+
+    dependencies {
+        testCompile("org.spockframework:spock-core:${spockVersion}") {
+            exclude group: 'org.codehaus.groovy'
+        }
+        testCompile("org.codehaus.groovy:groovy-all:$groovyVersion")
+        testCompile('org.hamcrest:hamcrest-core:1.3') // only necessary if Hamcrest matchers are used
+        testCompile('cglib:cglib-nodep:3.1') // used for spock framework to mock non-interface classes.
+        testCompile('org.objenesis:objenesis:2.1') // used when mocked class has non-default constructor
+    }
 }
