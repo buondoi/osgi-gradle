@@ -103,13 +103,6 @@ public class ManifestBuilder
 			}
 
 			/**
-			 * export package instruction.
-			 * TODO if bundle-classpath is specified then we need to handle export-package in a different way
-			 */
-			final Packages packages = getPackages(analyzer, jar);
-			append(analyzer, EXPORT_PACKAGE, Processor.printClauses(packages));
-
-			/**
 			 * import package instruction
 			 */
 			final List<String> requires = instructions.getRequires();
@@ -117,8 +110,30 @@ public class ManifestBuilder
 			{
 				append(analyzer, IMPORT_PACKAGE, Utils.toString(requires));
 			}
+
+			/**
+			 * export package instruction.
+			 * TODO if bundle-classpath is specified then we need to handle export-package in a different way
+			 */
+			final List<String> exports = instructions.getExports();
+			if (!exports.isEmpty())
+			{
+				append(analyzer, EXPORT_PACKAGE, Utils.toString(exports));
+			}
 		}
 
+		/**
+		 * Auto calculate export packages if they're not specified.
+		 */
+		if (analyzer.getProperty(EXPORT_PACKAGE) == null)
+		{
+			final Packages packages = getPackages(analyzer, jar);
+			append(analyzer, EXPORT_PACKAGE, Processor.printClauses(packages));
+		}
+
+		/**
+		 * Calculate manifest.
+		 */
 		final Manifest manifest = analyzer.calcManifest();
 		if (analyzer.isOk())
 		{
