@@ -5,7 +5,8 @@ import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
 import java.nio.file.Path
-import java.nio.file.Paths
+
+import static java.nio.file.Paths.get
 
 /**
  * Created on 5/9/16.
@@ -17,6 +18,6 @@ class BaseSpec extends Specification
 
     Path rootPath()
     {
-        Paths.get(temp.getRoot().toURI())
+        get(temp.getRoot().toURI())
     }
 }

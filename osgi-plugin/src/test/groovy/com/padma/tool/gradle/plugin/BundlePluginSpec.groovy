@@ -11,6 +11,7 @@ class BundlePluginSpec extends BaseSpec
     {
         setup:
         def project = ProjectBuilder.builder().withProjectDir(rootPath().toFile()).build()
+        project.apply plugin: 'java'
 
         when:
         project.apply plugin: 'bundle'

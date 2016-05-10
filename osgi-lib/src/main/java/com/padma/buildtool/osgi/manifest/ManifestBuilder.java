@@ -8,7 +8,6 @@ import aQute.bnd.osgi.Processor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
@@ -25,6 +24,7 @@ public class ManifestBuilder
 {
 	private final Path root;
 	private Instructions instructions;
+	private Map<String, String> customizedProps;
 
 	public ManifestBuilder(Path root)
 	{
@@ -37,9 +37,15 @@ public class ManifestBuilder
 		return this;
 	}
 
+	public ManifestBuilder withProps(Map<String, String> customizedProps)
+	{
+		this.customizedProps = customizedProps;
+		return this;
+	}
+
 	public final Manifest build() throws Exception
 	{
-		return build(Collections.emptyMap());
+		return build(customizedProps);
 	}
 
 	/**
@@ -49,7 +55,7 @@ public class ManifestBuilder
 	 * @return {@link Manifest}. Return a null value if there is an error.
 	 * @throws Exception
 	 */
-	public Manifest build(Map<String, String> customizedProps) throws Exception
+	private Manifest build(Map<String, String> customizedProps) throws Exception
 	{
 		final Jar jar = new Jar(root.toFile());
 		final Analyzer analyzer = new Analyzer();
