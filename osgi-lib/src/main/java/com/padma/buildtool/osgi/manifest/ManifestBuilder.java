@@ -8,6 +8,7 @@ import aQute.bnd.osgi.Processor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
@@ -45,7 +46,7 @@ public class ManifestBuilder
 
 	public final Manifest build() throws Exception
 	{
-		return build(customizedProps);
+		return build(customizedProps == null ? Collections.emptyMap() : customizedProps);
 	}
 
 	/**
