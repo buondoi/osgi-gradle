@@ -7,7 +7,10 @@ import aQute.bnd.osgi.Processor;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.jar.Manifest;
 
 import static aQute.bnd.osgi.Constants.*;
@@ -35,7 +38,7 @@ public class ManifestBuilder
 		return this;
 	}
 
-	public ManifestBuilder headers(HashMap<String, String> customizedProps)
+	public ManifestBuilder headers(Map<String, String> customizedProps)
 	{
 		this.customizedProps = customizedProps;
 		return this;
