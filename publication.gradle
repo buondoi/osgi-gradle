@@ -1,0 +1,22 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            pom.withXml {
+                asNode().appendNode('scm').appendNode('url', 'https://github.com/buondoi/osgi-gradle.git')
+                def dev = asNode().appendNode('developers').appendNode('developer')
+                dev.appendNode('name', 'Tam Nguyen')
+                dev.appendNode('email', 'tamnguyen1560@gmail.com')
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = "$buildDir/repo"
+        }
+    }
+}

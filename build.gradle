@@ -13,6 +13,10 @@ configure(subprojects) {
     apply plugin: 'java'
     apply plugin: 'groovy'
     apply plugin: 'project-report'
+    apply from: '../publication.gradle'
+
+    group = 'com.padma'
+    version = '1.0'
 
     dependencies {
         testCompile("org.spockframework:spock-core:${spockVersion}") {
