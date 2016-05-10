@@ -1,0 +1,6 @@
+{
+  "name": "Osgi-gradle",
+  "tagline": "Just another OSGi plugin for Gradle.",
+  "body": "# Why\r\n* Support OSGI instructions in Yaml format.\r\n* OSGI instructions are defined in a separated file so it can be used by build tool (Gradle) or integration test framework in consistent way\r\n\r\n# How to use\r\nOSGI instructions are declared in **META-INF/manifest.yml** file.\r\n\r\nSupported instructions\r\n* exports: export package instruction\r\n* requires: import package instruction\r\n* embeddedLibs: bundle classpath instruction\r\n\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
