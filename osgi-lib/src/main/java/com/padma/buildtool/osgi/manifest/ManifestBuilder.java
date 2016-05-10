@@ -7,10 +7,7 @@ import aQute.bnd.osgi.Processor;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.jar.Manifest;
 
 import static aQute.bnd.osgi.Constants.*;
@@ -32,13 +29,13 @@ public class ManifestBuilder
 		this.root = root;
 	}
 
-	public ManifestBuilder with(Instructions instructions)
+	public ManifestBuilder instructions(Instructions instructions)
 	{
 		this.instructions = instructions;
 		return this;
 	}
 
-	public ManifestBuilder withProps(Map<String, String> customizedProps)
+	public ManifestBuilder headers(HashMap<String, String> customizedProps)
 	{
 		this.customizedProps = customizedProps;
 		return this;

@@ -28,10 +28,13 @@ class BundlePlugin implements Plugin<ProjectInternal>
 			Path root = get(main.output.classesDir.toURI())
 			def builder = new ManifestBuilder(root)
 
+			Map<String, String> headers = new HashMap<>(3)
+			headers.put("Bundle-SymbolicName", project.name)
+			headers.put("Bundle-Name", project.name)
+			headers.put("Bundle-Version", project.version.toString())
+
 			// configure customized headers.
-			def props = ["Bundle-SymbolicName": project.name, "Bundle-Version": project.version.
-					toString(), "Bundle-Name"   : project.name] as Map
-			builder.withProps(props)
+			builder.headers(headers)
 
 			// configure customized instructions.
 			main.resources.srcDirs.each {dir ->
@@ -39,7 +42,7 @@ class BundlePlugin implements Plugin<ProjectInternal>
 				if (exists(manifestPath))
 				{
 					def instructions = Instructions.fromYml(manifestPath.toUri().toURL())
-					builder.with(instructions)
+					builder.instructions(instructions)
 				}
 			}
 
