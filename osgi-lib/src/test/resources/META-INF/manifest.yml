@@ -4,3 +4,5 @@ requires:
   - "javax.sql"
 embeddedLibs:
   - "META-INF/libs"
+modules:
+  - "com.package.module.ModuleClass"

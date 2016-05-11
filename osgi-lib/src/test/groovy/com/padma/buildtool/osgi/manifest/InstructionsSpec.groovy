@@ -21,5 +21,6 @@ class InstructionsSpec extends Specification
 		manifest.exports.contains('com.padma')
 		manifest.requires.contains('javax.sql')
 		manifest.embeddedLibs.contains('META-INF/libs')
+		manifest.modules.contains('com.package.module.ModuleClass')
 	}
 }
