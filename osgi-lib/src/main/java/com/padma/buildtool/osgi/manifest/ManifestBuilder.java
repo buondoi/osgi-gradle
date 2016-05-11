@@ -4,17 +4,20 @@ import aQute.bnd.osgi.Analyzer;
 import aQute.bnd.osgi.Jar;
 import aQute.bnd.osgi.Packages;
 import aQute.bnd.osgi.Processor;
+import com.padma.buildtool.osgi.manifest.InstructionFunc.Context;
+import com.padma.buildtool.osgi.manifest.instruction.ModuleInstruction;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
 
 import static aQute.bnd.osgi.Constants.*;
-import static java.nio.file.Files.isDirectory;
+import static com.padma.buildtool.osgi.manifest.InstructionFunc.compose;
+import static com.padma.buildtool.osgi.manifest.instruction.EmbeddedLibsInstruction.EMBEDDED_LIBS_INSTRUCTION;
+import static com.padma.buildtool.osgi.manifest.instruction.ExportPackageInstruction.EXPORT_PACKAGE_INSTRUCTION;
+import static com.padma.buildtool.osgi.manifest.instruction.ImportPackageInstruction.IMPORT_PACKAGE_INSTRUCTION;
+import static com.padma.buildtool.osgi.manifest.instruction.ModuleInstruction.MODULE_INSTRUCTION;
 import static java.nio.file.Files.newDirectoryStream;
 
 
@@ -26,6 +29,9 @@ public class ManifestBuilder
 	private final Path root;
 	private Instructions instructions;
 	private Map<String, String> customizedProps;
+
+	private static final InstructionFunc INSTRUCTION_FUNC = compose(EMBEDDED_LIBS_INSTRUCTION, IMPORT_PACKAGE_INSTRUCTION,
+			EXPORT_PACKAGE_INSTRUCTION, MODULE_INSTRUCTION);
 
 	public ManifestBuilder(Path root)
 	{
@@ -68,62 +74,11 @@ public class ManifestBuilder
 		// process instructions.
 		if (instructions != null)
 		{
-			/**
-			 * bundle classpath instruction
-			 */
-			final List<String> embeddedLibs = instructions.getEmbeddedLibs();
-			if (!embeddedLibs.isEmpty())
-			{
-				final List<Path> libPaths = new ArrayList<>(embeddedLibs.size());
-				embeddedLibs.forEach(lib -> {
-					final Path path = root.resolve(lib);
-					if (Files.exists(path))
-					{
-						libPaths.add(path);
-					}
-				});
-
-				if (!libPaths.isEmpty())
-				{
-					final List<String> libStrPaths = new ArrayList<>(libPaths.size());
-					for (Path libPath : libPaths)
-					{
-						if (isDirectory(libPath))
-						{
-							newDirectoryStream(libPath, "*.{jar}")
-									.forEach(jarPath -> libStrPaths.add(root.relativize(jarPath).toString()));
-						}
-						else
-						{
-							libStrPaths.add(root.relativize(libPath).toString());
-						}
-					}
-					append(analyzer, BUNDLE_CLASSPATH, ".," + Utils.toString(libStrPaths));
-				}
-			}
-
-			/**
-			 * import package instruction
-			 */
-			final List<String> requires = instructions.getRequires();
-			if (!requires.isEmpty())
-			{
-				append(analyzer, IMPORT_PACKAGE, Utils.toString(requires));
-			}
-
-			/**
-			 * export package instruction.
-			 * TODO if bundle-classpath is specified then we need to handle export-package in a different way
-			 */
-			final List<String> exports = instructions.getExports();
-			if (!exports.isEmpty())
-			{
-				append(analyzer, EXPORT_PACKAGE, Utils.toString(exports));
-			}
+			INSTRUCTION_FUNC.apply(new BndContext(root, analyzer), instructions);
 		}
 
 		/**
-		 * Auto calculate export packages if they're not specified.
+		 * Calculate export packages if they're not specified by default.
 		 */
 		if (analyzer.getProperty(EXPORT_PACKAGE) == null)
 		{
@@ -142,7 +97,43 @@ public class ManifestBuilder
 		return null;
 	}
 
-	private void append(Analyzer analyzer, String property, String value)
+	final class BndContext implements Context
+	{
+		private final Path root;
+		private final Analyzer analyzer;
+
+		BndContext(final Path root, final Analyzer analyzer)
+		{
+			this.root = root;
+			this.analyzer = analyzer;
+		}
+
+		@Override
+		public Path root()
+		{
+			return root;
+		}
+
+		@Override
+		public void append(final String prop, final String value)
+		{
+			ManifestBuilder.append(analyzer, prop, value);
+		}
+
+		@Override
+		public boolean hasProperty(final String name)
+		{
+			return analyzer.getProperties().contains(name);
+		}
+
+		@Override
+		public String getProperty(final String name)
+		{
+			return analyzer.getProperty(name);
+		}
+	}
+
+	private static void append(Analyzer analyzer, String property, String value)
 	{
 		final String propVal = analyzer.getProperty(property);
 		if (propVal != null)
