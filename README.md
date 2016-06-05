@@ -11,3 +11,4 @@ Supported instructions
 * requires: import package instruction
 * embeddedLibs: bundle classpath instruction
 
+Website [http://buondoi.github.io/osgi-gradle](http://buondoi.github.io/osgi-gradle)
