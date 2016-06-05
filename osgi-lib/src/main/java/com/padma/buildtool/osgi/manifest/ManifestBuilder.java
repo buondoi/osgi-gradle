@@ -5,20 +5,20 @@ import aQute.bnd.osgi.Jar;
 import aQute.bnd.osgi.Packages;
 import aQute.bnd.osgi.Processor;
 import com.padma.buildtool.osgi.manifest.InstructionFunc.Context;
-import com.padma.buildtool.osgi.manifest.instruction.ModuleInstruction;
 
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import java.util.jar.Manifest;
 
-import static aQute.bnd.osgi.Constants.*;
+import static aQute.bnd.osgi.Constants.EXPORT_PACKAGE;
 import static com.padma.buildtool.osgi.manifest.InstructionFunc.compose;
 import static com.padma.buildtool.osgi.manifest.instruction.EmbeddedLibsInstruction.EMBEDDED_LIBS_INSTRUCTION;
 import static com.padma.buildtool.osgi.manifest.instruction.ExportPackageInstruction.EXPORT_PACKAGE_INSTRUCTION;
 import static com.padma.buildtool.osgi.manifest.instruction.ImportPackageInstruction.IMPORT_PACKAGE_INSTRUCTION;
 import static com.padma.buildtool.osgi.manifest.instruction.ModuleInstruction.MODULE_INSTRUCTION;
-import static java.nio.file.Files.newDirectoryStream;
+import static com.padma.buildtool.osgi.manifest.instruction.RootBundleClassPathInstruction.ROOT_BUNDLE_CLASS_PATH_INSTRUCTION;
+import static com.padma.buildtool.osgi.manifest.instruction.WebBundleInstruction.WEB_BUNDLE_INSTRUCTION;
 
 
 /**
@@ -31,7 +31,7 @@ public class ManifestBuilder
 	private Map<String, String> customizedProps;
 
 	private static final InstructionFunc INSTRUCTION_FUNC = compose(EMBEDDED_LIBS_INSTRUCTION, IMPORT_PACKAGE_INSTRUCTION,
-			EXPORT_PACKAGE_INSTRUCTION, MODULE_INSTRUCTION);
+			EXPORT_PACKAGE_INSTRUCTION, MODULE_INSTRUCTION, WEB_BUNDLE_INSTRUCTION, ROOT_BUNDLE_CLASS_PATH_INSTRUCTION);
 
 	public ManifestBuilder(Path root)
 	{
@@ -123,7 +123,7 @@ public class ManifestBuilder
 		@Override
 		public boolean hasProperty(final String name)
 		{
-			return analyzer.getProperties().contains(name);
+			return analyzer.getProperty(name) != null;
 		}
 
 		@Override

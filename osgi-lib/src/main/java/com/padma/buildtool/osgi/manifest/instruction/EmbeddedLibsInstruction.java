@@ -52,7 +52,7 @@ public class EmbeddedLibsInstruction implements InstructionFunc
 						paths.add(root.relativize(libPath).toString());
 					}
 				}
-				context.append(BUNDLE_CLASSPATH, ".," + Utils.toString(paths));
+				context.append(BUNDLE_CLASSPATH, Utils.toString(paths));
 			}
 		}
 		return context;

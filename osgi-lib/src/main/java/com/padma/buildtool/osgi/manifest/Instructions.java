@@ -19,6 +19,7 @@ public final class Instructions
 	private final List<String> exports;
 	private final List<String> embeddedLibs;
 	private final List<String> modules;
+	private final boolean isWebModule;
 
 	private Instructions(final Builder builder)
 	{
@@ -26,6 +27,7 @@ public final class Instructions
 		this.requires = builder.requires == null ? emptyList() : builder.requires;
 		this.embeddedLibs = builder.embeddedLibs == null ? emptyList() : builder.embeddedLibs;
 		this.modules = builder.modules == null ? emptyList() : builder.modules;
+		this.isWebModule = builder.isWebModule;
 	}
 
 	public List<String> getRequires()
@@ -50,12 +52,42 @@ public final class Instructions
 
 	public static Instructions fromYml(URL url) throws IOException
 	{
+		return fromYml(url, false);
+	}
+
+	public static Instructions fromYml(URL url, boolean isWebModule) throws IOException
+	{
 		final Yaml yaml = new Yaml();
 		try (final InputStream in = url.openStream())
 		{
 			final Builder builder = yaml.loadAs(in, Builder.class);
+			if (isWebModule)
+			{
+				return builder.buildWebModule();
+			}
 			return builder.build();
 		}
+	}
+
+	public static Builder from(Instructions instructions)
+	{
+		final Builder builder = new Builder();
+		builder.setEmbeddedLibs(instructions.embeddedLibs);
+		builder.setExports(instructions.exports);
+		builder.setModules(instructions.modules);
+		builder.setRequires(instructions.requires);
+		builder.setIsWebModule(instructions.isWebModule);
+		return builder;
+	}
+
+	public static Builder newBuilder()
+	{
+		return new Builder();
+	}
+
+	public boolean isWebModule()
+	{
+		return isWebModule;
 	}
 
 	public static final class Builder
@@ -64,6 +96,12 @@ public final class Instructions
 		private List<String> requires;
 		private List<String> embeddedLibs;
 		private List<String> modules;
+		public boolean isWebModule;
+
+		private Builder()
+		{
+			// not allowed
+		}
 
 		public void setExports(final List<String> exports)
 		{
@@ -85,9 +123,20 @@ public final class Instructions
 			this.modules = modules;
 		}
 
+		public void setIsWebModule(boolean isWebModule)
+		{
+			this.isWebModule = isWebModule;
+		}
+
 		public Instructions build()
 		{
 			return new Instructions(this);
+		}
+
+		public Instructions buildWebModule()
+		{
+			this.isWebModule = true;
+			return build();
 		}
 	}
 }

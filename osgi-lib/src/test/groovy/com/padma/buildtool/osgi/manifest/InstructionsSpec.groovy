@@ -23,4 +23,18 @@ class InstructionsSpec extends Specification
 		manifest.embeddedLibs.contains('META-INF/libs')
 		manifest.modules.contains('com.package.module.ModuleClass')
 	}
+
+	def 'create web bundle manifest'()
+	{
+		setup:
+		def url = InstructionsSpec.class.getResource('/META-INF/manifest.yml')
+
+		when:
+		def manifest = Instructions.fromYml(url, true)
+
+		then:
+		noExceptionThrown()
+		manifest != null
+		manifest.isWebModule()
+	}
 }
