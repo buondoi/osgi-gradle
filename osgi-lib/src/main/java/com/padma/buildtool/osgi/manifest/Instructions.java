@@ -5,6 +5,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -52,19 +53,10 @@ public final class Instructions
 
 	public static Instructions fromYml(URL url) throws IOException
 	{
-		return fromYml(url, false);
-	}
-
-	public static Instructions fromYml(URL url, boolean isWebModule) throws IOException
-	{
 		final Yaml yaml = new Yaml();
 		try (final InputStream in = url.openStream())
 		{
 			final Builder builder = yaml.loadAs(in, Builder.class);
-			if (isWebModule)
-			{
-				return builder.buildWebModule();
-			}
 			return builder.build();
 		}
 	}
@@ -132,11 +124,24 @@ public final class Instructions
 		{
 			return new Instructions(this);
 		}
+	}
 
-		public Instructions buildWebModule()
-		{
-			this.isWebModule = true;
-			return build();
-		}
+	@Override
+	public String toString()
+	{
+		return "Instructions: {isWebModule: " + isWebModule + ", embeddedLibs: " + toString(embeddedLibs) + "}";
+	}
+
+	private String toString(Collection<String> collection)
+	{
+		final StringBuilder value = new StringBuilder();
+		collection.forEach(str -> {
+			if (value.length() > 0)
+			{
+				value.append(',');
+			}
+			value.append(str);
+		});
+		return value.toString();
 	}
 }

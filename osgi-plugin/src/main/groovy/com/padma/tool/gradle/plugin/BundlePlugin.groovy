@@ -20,13 +20,13 @@ import static java.nio.file.Paths.get
  * Created on 5/9/16.*/
 class BundlePlugin implements Plugin<ProjectInternal>
 {
+	public static final String MANIFEST_DEF_FILE = 'META-INF/manifest.yml'
+
 	@Override
 	void apply(final ProjectInternal project)
 	{
-		def projectPath = project.projectDir.toPath()
-
 		// if it's web module.
-		boolean isWebModule = exists(projectPath.resolve('src/main/webapp'))
+		boolean isWebModule = isWebProject(project)
 
 		project.logger.info('Project [{}] {} web module.', project.name, isWebModule ? 'is' : 'is not')
 
@@ -49,7 +49,11 @@ class BundlePlugin implements Plugin<ProjectInternal>
 			builder.headers(headers)
 
 			// configure customized instructions.
-			builder.instructions(prepareInstructions(project))
+			Instructions instructions = prepareInstructions(project)
+
+			project.logger.info("***** Instructions = ${instructions.toString()}")
+
+			builder.instructions(instructions)
 
 			if (isWebModule)
 			{
@@ -73,7 +77,7 @@ class BundlePlugin implements Plugin<ProjectInternal>
 		{
 			instructions = Instructions.newBuilder().build()
 		}
-		if (isWebProject(project) && !instructions.isWebModule())
+		if (isWebProject(project))
 		{
 			def builder = Instructions.from(instructions)
 			builder.setIsWebModule(true)
@@ -83,13 +87,17 @@ class BundlePlugin implements Plugin<ProjectInternal>
 		return instructions
 	}
 
-	static def loadInstructions(Project project)
+	static Instructions loadInstructions(Project project)
 	{
 		def main = project.convention.getPlugin(JavaPluginConvention).sourceSets.main
-		main.resources.srcDirs.each {dir ->
-			def manifestPath = get(dir.toURI()).resolve('META-INF/manifest.yml')
+
+		Set<File> dirs = main.resources.srcDirs
+		for (File dir : dirs)
+		{
+			def manifestPath = get(dir.toURI()).resolve(MANIFEST_DEF_FILE)
 			if (exists(manifestPath))
 			{
+				project.logger.info("******loadInstructions() Found $MANIFEST_DEF_FILE in project ${project.name}")
 				return Instructions.fromYml(manifestPath.toUri().toURL())
 			}
 		}
